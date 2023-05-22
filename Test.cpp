@@ -42,6 +42,13 @@ TEST_CASE("Game tests"){
     CHECK_EQ(game.turn, game.turns.size());
 }
 
-TEST_CASE(""){
-    
+TEST_CASE("Testing how the game affects players"){
+    Player p1("Daniel");
+    Player p2("Noam");
+    Game game(p1, p2);
+    CHECK(p1.stacksize() == 26);
+    game.playTurn();
+    CHECK(p2.stacksize() == 25);
+    game.playAll();
+    CHECK(p1.stacksize() ==0);
 }

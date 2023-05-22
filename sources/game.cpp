@@ -17,7 +17,6 @@ void Game::playTurn()
 {
     for (int i = 0; i < carry_from_draw / 2; i++) // Drawing cards upside down as the last turn was a draw.
     {
-        printf("Laying down cards for draw\n");
         if (p1->stacksize() > 1)
         {
             p1->TopCard();
@@ -68,7 +67,6 @@ void Game::playTurn()
             size_t index = turn -1;
             while (index >= 0 && (results[index] == 0 || results[index] == -1))
             {
-                printf("Getting draw cards\n");
                 p1->cardswon_arr[p1->cardswon] = turns.at(index - 1).first;
                 p2->cardswon_arr[p2->cardswon + 1] = turns.at(index - 1).second;
                 p1->cardswon += 1 * (turn - index + 1);
@@ -117,7 +115,6 @@ void Game::playAll()
     while (p1->stacksize() > 0 && p2->stacksize() > 0)
     {
         playTurn();
-        printLastTurn();
     }
 }
 void Game::printLog()
