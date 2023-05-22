@@ -3,14 +3,15 @@
 #include "sources/game.hpp"
 using namespace ariel;
 
-
-TEST_CASE("Player tests"){
+TEST_CASE("Player tests")
+{
     Player p1("Daniel");
     Player p2("Noam");
     CHECK_EQ(p2.num_of_cards, 25);
     p2.TopCard();
     CHECK_EQ(p2.num_of_cards, 24);
-    for(int i = 0; i < 25; i++){
+    for (int i = 0; i < 25; i++)
+    {
         CHECK_FALSE(p2.TopCard() == -1);
     }
     CHECK_EQ(p2.TopCard(), -1);
@@ -28,7 +29,8 @@ TEST_CASE("Player tests"){
     CHECK_FALSE(p2.name == p1.name);
 }
 
-TEST_CASE("Game tests"){
+TEST_CASE("Game tests")
+{
     Player p1("Daniel");
     Player p2("Noam");
     Game game(p1, p2);
@@ -42,7 +44,8 @@ TEST_CASE("Game tests"){
     CHECK_EQ(game.turn, game.turns.size());
 }
 
-TEST_CASE("Testing how the game affects players"){
+TEST_CASE("Testing how the game affects players")
+{
     Player p1("Daniel");
     Player p2("Noam");
     Game game(p1, p2);
@@ -50,5 +53,5 @@ TEST_CASE("Testing how the game affects players"){
     game.playTurn();
     CHECK(p2.stacksize() == 25);
     game.playAll();
-    CHECK(p1.stacksize() ==0);
+    CHECK(p1.stacksize() == 0);
 }
