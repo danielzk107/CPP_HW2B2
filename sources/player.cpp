@@ -11,6 +11,11 @@ Player::Player(std::string other_name)
 {
     name = other_name;
     num_of_cards = 25; // Used more as a pointer than a representation of amount of cards
+    for (size_t i = 0; i < 25; i++)
+    {
+        cards[i] = Card(i%13, "Default Value");
+    }
+    
     cardswon = 0;
 }
 int Player::stacksize()
@@ -33,7 +38,7 @@ int Player::TopCard()
 }
 void Player::setCards(Card other[52])
 {
-    int new_num_of_cards = 0;
+    int new_num_of_cards = -1;
     for (int i = 0; i < 52; i++)
     {
         cards[i] = other[i];
@@ -42,5 +47,5 @@ void Player::setCards(Card other[52])
             new_num_of_cards++;
         }
     }
-    num_of_cards = new_num_of_cards - 1;
+    num_of_cards = new_num_of_cards;
 }

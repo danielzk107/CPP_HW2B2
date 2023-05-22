@@ -15,8 +15,9 @@ Game::Game(Player &other_p1, Player &other_p2)
 }
 void Game::playTurn()
 {
-    for (int i = 0; i < carry_from_draw; i++) // Drawing cards upside down as the last turn was a draw.
+    for (int i = 0; i < carry_from_draw / 2; i++) // Drawing cards upside down as the last turn was a draw.
     {
+        printf("Laying down cards for draw\n");
         if (p1->stacksize() > 1)
         {
             p1->TopCard();
@@ -36,63 +37,62 @@ void Game::playTurn()
         {
             if (p1->last_played.value == 2)
             { // P1 wins
-                for (size_t i = 0; i <= carry_from_draw; i++)
-                {
-                    p1->cardswon_arr[p1->cardswon] = turns.at(turn - i - 1).first;
-                    p1->cardswon_arr[p1->cardswon + 1] = turns.at(turn - i - 1).second;
-                    p1->cardswon += 2;
-                }
-                // cout << p1->name << " wins." << endl;
+                p1->cardswon_arr[p1->cardswon] = turns.at(turn - 1).first;
+                p1->cardswon_arr[p1->cardswon + 1] = turns.at(turn - 1).second;
+                p1->cardswon += 2 + carry_from_draw*2;
                 results.push_back(1);
-                // printf("P1\n");
                 carry_from_draw = 0; // Resetting the number of consecutive draws
             }
             else
             { // P2 wins
-                for (size_t i = 0; i <= carry_from_draw; i++)
-                {
-                    p2->cardswon_arr[p2->cardswon] = turns.at(turn - i - 1).first;
-                    p2->cardswon_arr[p2->cardswon + 1] = turns.at(turn - i - 1).second;
-                    p2->cardswon += 2;
-                }
-                // cout << p2->name << " wins." << endl;
+                p2->cardswon_arr[p2->cardswon] = turns.at(turn - 1).first;
+                p2->cardswon_arr[p2->cardswon + 1] = turns.at(turn - 1).second;
+                p2->cardswon += 2 + carry_from_draw*2;
                 results.push_back(2);
-                // printf("P2\n");
                 carry_from_draw = 0; // Resetting the number of consecutive draws
             }
         }
         else
         { // P1 wins
-            for (size_t i = 0; i <= carry_from_draw; i++)
-            {
-                p1->cardswon_arr[p1->cardswon] = turns.at(turn - i - 1).first;
-                p1->cardswon_arr[p1->cardswon + 1] = turns.at(turn - i - 1).second;
-                p1->cardswon += 2;
-            }
-            // cout << p1->name << " wins." << endl;
+            p1->cardswon_arr[p1->cardswon] = turns.at(turn - 1).first;
+            p1->cardswon_arr[p1->cardswon + 1] = turns.at(turn - 1).second;
+            p1->cardswon += 2 + carry_from_draw*2;
             results.push_back(1);
-            // printf("P1\n");
             carry_from_draw = 0; // Resetting the number of consecutive draws
         }
     }
     else if (p1->last_played.Winning(p2->last_played) == 0)
     {
-        // cout << "Draw." << endl;
-        carry_from_draw++;
+        if (turn == 25)
+        {
+            size_t index = turn -1;
+            while (index >= 0 && (results[index] == 0 || results[index] == -1))
+            {
+                printf("Getting draw cards\n");
+                p1->cardswon_arr[p1->cardswon] = turns.at(index - 1).first;
+                p2->cardswon_arr[p2->cardswon + 1] = turns.at(index - 1).second;
+                p1->cardswon += 1 * (turn - index + 1);
+                p2->cardswon += 1 * (turn - index + 1);
+                index--;
+            }
+            p1->cardswon++;
+            p2->cardswon++;
+        }
+        if(carry_from_draw == 0){
+            carry_from_draw = 2;
+        }
+        else{
+            carry_from_draw = carry_from_draw * 2;
+        }
         num_of_draws++;
         results.push_back(0);
     }
     else
     { // P2 wins
-        for (size_t i = 0; i <= carry_from_draw; i++)
-        {
-            p2->cardswon_arr[p2->cardswon] = turns.at(turn - i - 1).first;
-            p2->cardswon_arr[p2->cardswon + 1] = turns.at(turn - i - 1).second;
-            p2->cardswon += 2;
-        }
-        // cout << p2->name << " wins." << endl;
+        p2->cardswon_arr[p2->cardswon] = turns.at(turn - 1).first;
+        p2->cardswon_arr[p2->cardswon + 1] = turns.at(turn - 1).second;
+        p2->cardswon += 2 + carry_from_draw*2;
         results.push_back(2);
-        // printf("P2\n");
         carry_from_draw = 0; // Resetting the number of consecutive draws
     }
     int res = gameResult();
@@ -117,6 +117,7 @@ void Game::playAll()
     while (p1->stacksize() > 0 && p2->stacksize() > 0)
     {
         playTurn();
+        printLastTurn();
     }
 }
 void Game::printLog()
@@ -152,7 +153,8 @@ void Game::printWiner()
 } // Typo; Should be winner
 void Game::printLastTurn()
 {
-    if(turns.size() < 1){
+    if (turns.size() < 1)
+    {
         printf("The game has not yet started.\n");
         return;
     }
@@ -173,8 +175,8 @@ void Game::printLastTurn()
 void Game::printStats()
 {
     printWiner();
-    cout << "This game had " << num_of_draws << " draws, meaning " << (num_of_draws)*(100/(float)(turn+1)) << "\% of turns were draws." << endl;
-    cout << p1-> name << " has won " << p1->cardesTaken() << " cards, while " << p2->name << " has won " << p2->cardesTaken() << "." << endl;
+    cout << "This game had " << num_of_draws << " draws, meaning " << (num_of_draws) * (100 / (float)(turn + 1)) << "\% of turns were draws." << endl;
+    cout << p1->name << " has won " << p1->cardesTaken() << " cards, while " << p2->name << " has won " << p2->cardesTaken() << "." << endl;
 }
 void Game::ShuffleDeck(Player *p1, Player *p2) // Shuffles a deck and splits it between the two players
 {
@@ -232,6 +234,5 @@ int Game::gameResult()
     {
         return 2;
     }
-    cout << p1->cardesTaken() << ", " << p2->cardesTaken() << ", " << turn << endl;
     return 0;
 }

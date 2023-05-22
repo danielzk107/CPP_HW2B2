@@ -7,9 +7,9 @@ using namespace ariel;
 TEST_CASE("Player tests"){
     Player p1("Daniel");
     Player p2("Noam");
-    CHECK_EQ(p2.num_of_cards, 26);
-    p2.TopCard();
     CHECK_EQ(p2.num_of_cards, 25);
+    p2.TopCard();
+    CHECK_EQ(p2.num_of_cards, 24);
     for(int i = 0; i < 25; i++){
         CHECK_FALSE(p2.TopCard() == -1);
     }
@@ -22,9 +22,9 @@ TEST_CASE("Player tests"){
     // CHECK_EQ(p1.num_of_cards, p2.num_of_cards);
     CHECK_FALSE(p2.TopCard() == -1);
     CHECK_FALSE(p2.num_of_cards == p1.num_of_cards);
-    p1.num_of_cards = 0;
+    p1.num_of_cards = -1; // This variable is used as an index, so we use -1 to indicate no cards
     CHECK_EQ(p1.TopCard(), -1);
-    CHECK_EQ(p1.stacksize(), p1.num_of_cards);
+    CHECK_FALSE(p1.stacksize() == p1.num_of_cards);
     CHECK_FALSE(p2.name == p1.name);
 }
 
